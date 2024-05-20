@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.NoSuchElementException;
-
+import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 
@@ -48,12 +48,12 @@ Colledge colledge = new Colledge(new Student[] {st1, st2, st3});
 	private static IntSummaryStatistics getMarksStatistics(Colledge col) 
 	{
 		//returns summary statistics for marks of all colledge's students
-		return Arrays.stream(col.students).flatMapToInt(a->Arrays.stream(a.marks()) ).summaryStatistics();
+		return StreamSupport.stream(col.spliterator(), false).flatMapToInt(a->Arrays.stream(a.marks()) ).summaryStatistics();
 	}
 	static private IntSummaryStatistics getHoursStatistics(Colledge col) 
 	{
 		//returns IntSummaryStatistics of hours for all colledge's students
-		return Arrays.stream(col.students).mapToInt(i->i.hours()).summaryStatistics();
+		return StreamSupport.stream(col.spliterator(), false).mapToInt(i->i.hours()).summaryStatistics();
 	}
 	 private Student[] sortStudents(Colledge col)
 	 {
@@ -61,7 +61,8 @@ Colledge colledge = new Colledge(new Student[] {st1, st2, st3});
 		//returns array of students sorted in descending order of the average marks
 		//in the case average marks are equaled there will be compared hours
 		//one code line		
-		return Arrays.stream(col.students)
+		 
+		 return StreamSupport.stream(col.spliterator(), false)
 		.sorted((s1,s2)->
 		{	
 			int comp=Double.compare( Arrays.stream(s2.marks()).average().orElseThrow(() -> new NoSuchElementException("empty stream"))
